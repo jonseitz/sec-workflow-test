@@ -6,7 +6,7 @@
 
 This is the react-based client application for the Directory Screen on the SEAS Allston Campus. It was bootstrapped with [Create React App][cra] using the default Typescript template.
 
-This is meant to be used in conjunction with the [sec-directory-server][server] project, which is responsible for populating the Algolia database.
+This is meant to be used in conjunction with the [sec-directory-server][server] project, which is responsible for populating the Algolia database, and will be displayed on the SEAS Allston campus.
 
 ## Setup
 
