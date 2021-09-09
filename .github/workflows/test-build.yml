@@ -27,10 +27,14 @@ jobs:
     name: Build front end bundle 
     # Only build bundle when code has been merged into main
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    concurrency: bump_build_release
     needs: test
     runs-on: ubuntu-latest
     steps:
+      # Always check out the main branch
       - uses: actions/checkout@v2
+        with:
+          ref: refs/heads/main
       - uses: actions/setup-node@v2
         with:
           node-version: 14
@@ -40,13 +44,14 @@ jobs:
       # commit, or else this step fails.  We're still using the token that
       # GitHub Actions automatically generates
       - name: update patch version number and push back to branch
+        if: ${{ !startsWith(github.event.head_commit.message, '[release]') }}
         run: |
           git config --local user.name "SEAS COMPUTING ROBOT"
           git config --local user.email "computing-dev-team@seas.harvard.edu"
           git config --local push.default matching
           git config credential.helper "store --file=.git/credentials"
           echo "https://${GITHUB_TOKEN}:@github.com" > .git/credentials
-          npm version patch -m "Automatic bump to %s"
+          npm version patch -m "[release] Automatic bump to %s"
           echo "LATEST_TAG=v$(jq -Mr .version package.json)" >> $GITHUB_ENV
           git push --tags origin ${{ github.ref }}
       - name: Build bundle
